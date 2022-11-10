@@ -43,7 +43,7 @@ export default class Task extends React.Component {
                             isDragDisabled={isDragDisabled}
                         >
                             <Handle {...provided.dragHandleProps} />
-                            {this.props.task.id} : {this.props.task.content}
+                            {this.props.task.content}
                         </Container>
                         : <Container
                             {...provided.draggableProps}
@@ -53,7 +53,7 @@ export default class Task extends React.Component {
                             isDragDisabled={isDragDisabled}
 
                         >
-                            {this.props.task.id} : {this.props.task.content}
+                            {this.props.task.content}
                         </Container>
                 }}
             </Draggable>

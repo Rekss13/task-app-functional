@@ -10,6 +10,19 @@ const Container = styled.div`
     display: flex;
 `;
 
+class InnerList extends React.PureComponent {
+    render() {
+        const { column, taskMap, isDropDisabled, index } = this.props;
+        const tasks = column.taskIds.map(taskId => taskMap[taskId]);
+        return <Column
+            column={column}
+            tasks={tasks}
+            isDropDisabled={isDropDisabled}
+            index={index}
+        />
+    }
+}
+
 class App extends React.Component {
     state = initialData;
 
@@ -39,12 +52,8 @@ class App extends React.Component {
 
         if (!destination) return;
 
-        if (
-            destination.droppableId === source.droppableId
-            && destination.index === source.index
-        ) {
-            return;
-        }
+        if (destination.droppableId === source.droppableId
+            && destination.index === source.index) return;
 
         if (type === 'column') {
             const newColumnOrder = Array.from(this.state.columnOrder);
@@ -58,10 +67,6 @@ class App extends React.Component {
 
             this.setState(newState);
             return;
-        }
-
-        const info = {
-            task: this.state.tasks[this.state.columns[source.droppableId].taskIds[source.index]]
         }
 
         const start = this.state.columns[source.droppableId];
@@ -133,16 +138,12 @@ class App extends React.Component {
                         >
                             {this.state.columnOrder.map((columnId, index) => {
                                 const column = this.state.columns[columnId];
-                                const task = column.taskIds.map(taskId => this.state.tasks[taskId]);
 
-                                const isDropDisabled = index < this.state.homeIndex;
-
-                                return <Column
+                                return <InnerList
                                     key={column.id}
                                     column={column}
-                                    task={task}
-                                    info={this.state.info}
-                                    isDropDisabled={isDropDisabled}
+                                    taskMap={this.state.tasks}
+                                    isDropDisabled={index < this.state.homeIndex}
                                     index={index}
                                 />
                             })}
