@@ -26,29 +26,45 @@ class InnerList extends React.PureComponent {
 class App extends React.Component {
     state = initialData;
 
-    onDragStart = start => {
+    onDragStart = (start, provided) => {
         document.body.style.color = 'darkgray';
         document.body.style.transition = 'background-color 0.2s ease';
+
+        provided.announce(
+            `You have lifted the task in position ${start.source.index + 1}`
+        );
 
         const homeIndex = this.state.columnOrder.indexOf(start.source.droppableId);
         this.setState({ homeIndex });
     }
 
-    onDragUpdate = update => {
+    onDragUpdate = (update, provided) => {
         const { destination } = update;
         const opacity = destination
             ? destination.index / Object.keys(this.state.tasks).length
             : 0;
         document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
+
+        const message = destination
+            ? `You have moved the task to position ${destination.index + 1}`
+            : `You are currently not over a droppable area`;
+        provided.announce(message);
     }
 
-    onDragEnd = result => {
+    onDragEnd = (result, provided) => {
         document.body.style.color = 'inherit';
         document.body.style.backgroundColor = 'inherit';
 
         this.setState({ homeIndex: null });
 
         const { destination, source, draggableId, type } = result;
+
+        const message = destination
+            ? `You have maved the task from position
+                ${source.index + 1} to ${destination.index + 1}`
+            : `The  task has been returned ro its starting position of
+                ${source.index + 1}`;
+        provided.announce(message);
 
         if (!destination) return;
 
